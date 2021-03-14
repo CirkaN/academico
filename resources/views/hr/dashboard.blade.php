@@ -46,7 +46,6 @@
                         <tr>
                             <th data-orderable="true">@lang('Teacher')</th>
                             <th>@lang('Planned Hours')</th>
-                            <th><strong>@lang('Period Total')</strong></th>
                             <th>@lang('Hours on schedule')</th>
                         </tr>
                     </thead>
@@ -56,15 +55,25 @@
                         <tr>
                             <td>{{ $teacher->name }}</td>
                             <td>
-                                <p>@lang('Remote') : {{ number_format($teacher->remoteVolume, 2, '.', ',') }} h</p>
-                                <p>@lang('Face-to-face') : {{ number_format($teacher->volume, 2, '.', ',') }} h</p>
+                                @if ($teacher->remoteVolume)
+                                    <p>@lang('Remote') : {{ number_format($teacher->remoteVolume, 2, '.', ',') }} h</p>
+                                @endif
+
+                                @if ($teacher->volume)
+                                    <p>@lang('Face-to-face') : {{ number_format($teacher->volume, 2, '.', ',') }} h</p>
+                                @endif
+
+                                @if ($teacher->volume && $teacher->remoteVolume)
+                                    <p>
+                                        <strong>@lang('Total:') {{ number_format($teacher->volume + $teacher->remoteVolume, 2, '.', ',') }} h</strong>
+                                    </p>
+                                @endif
                             </td>
 
                             <td>
-                                <strong>{{ number_format($teacher->volume + $teacher->remoteVolume, 2, '.', ',') }} h</strong>
+                                <p>@lang('Face-to-face') : {{ number_format($teacher->plannedHoursInPeriod($start, $end), 2, '.', ',') }} h</p>
+                                <p>@lang('Remote') : {{ number_format($teacher->plannedRemoteHoursInPeriod($start, $end), 2, '.', ',') }} h</p>
                             </td>
-
-                            <td>{{ number_format($teacher->period_planned_hours($selected_period), 2, '.', ',') }} h</td>
                         </tr>
                         @endforeach
                     </tbody>
