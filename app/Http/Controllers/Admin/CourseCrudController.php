@@ -866,7 +866,6 @@ class CourseCrudController extends CrudController
             $courseTimes = collect(json_decode($this->crud->getRequest()->input('times')));
         }
 
-        $course->saveRemoteEvents($remoteEvents);
 
         $sublevels = collect(json_decode($this->crud->getRequest()->input('sublevels')));
 
@@ -886,6 +885,9 @@ class CourseCrudController extends CrudController
 
         $response = $this->traitStore();
         $course = $this->crud->getCurrentEntry();
+
+        $remoteEvents = collect(json_decode($this->crud->getRequest()->input('remoteevents')));
+        $course->saveRemoteEvents($remoteEvents);
 
         if ($sublevels->count() > 0) {
             // create sublevels and apply coursetimes to them
